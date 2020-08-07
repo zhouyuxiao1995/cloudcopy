@@ -95,11 +95,18 @@ public class ShiroConfig {
 		filterChainDefinitionMap.put("/**/*.jpg", "anon");
 		filterChainDefinitionMap.put("/**/*.png", "anon");
 		filterChainDefinitionMap.put("/**/*.ico", "anon");
+		filterChainDefinitionMap.put("/app1/**", "anon");//工作流设计器
+		filterChainDefinitionMap.put("/app/**", "anon");//工作流设计器
+		filterChainDefinitionMap.put("/editor/**", "anon");//工作流设计器
+		filterChainDefinitionMap.put("/apps/**", "anon");//工作流设计器
+		filterChainDefinitionMap.put("/views/**", "anon");//工作流设计器
+		filterChainDefinitionMap.put("/editor-app/**", "anon");//工作流设计器
 
 		// update-begin--Author:sunjianlei Date:20190813 for：排除字体格式的后缀
 		filterChainDefinitionMap.put("/**/*.ttf", "anon");
 		filterChainDefinitionMap.put("/**/*.woff", "anon");
 		filterChainDefinitionMap.put("/**/*.woff2", "anon");
+		filterChainDefinitionMap.put("/**/*.json", "anon");
 		// update-begin--Author:sunjianlei Date:20190813 for：排除字体格式的后缀
 
 		filterChainDefinitionMap.put("/druid/**", "anon");

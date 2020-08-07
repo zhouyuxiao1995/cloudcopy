@@ -9,6 +9,9 @@
 		<artifactId>jeecg-boot-parent</artifactId>
 		<version>2.2.1</version>
 	</parent>
+	<properties>
+		<flowable.version>6.5.0</flowable.version>
+	</properties>
 
 	<repositories>
 		<repository>
@@ -34,6 +37,28 @@
 			<groupId>org.jeecgframework.boot</groupId>
 			<artifactId>jeecg-boot-base-common</artifactId>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.flowable/flowable-spring-boot-starter-basic -->
+		<dependency>
+			<groupId>org.flowable</groupId>
+			<artifactId>flowable-spring-boot-starter-basic</artifactId>
+			<version>${flowable.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.flowable</groupId>
+			<artifactId>flowable-ui-modeler-rest</artifactId>
+			<version>${flowable.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.flowable</groupId>
+			<artifactId>flowable-ui-modeler-conf</artifactId>
+			<version>${flowable.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.flowable</groupId>
+			<artifactId>flowable-ui-modeler-logic</artifactId>
+			<version>${flowable.version}</version>
+		</dependency>
+
 	</dependencies>
 	
 	<build>
