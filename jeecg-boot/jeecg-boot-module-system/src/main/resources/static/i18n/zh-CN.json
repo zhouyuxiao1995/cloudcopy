@@ -1861,7 +1861,8 @@
       }
     },
     "ALERT": {
-      "EDIT-CONFIRM": "模型被更新"
+      "EDIT-CONFIRM": "模型被更新",
+      "DEPLOY-CONFIRM": "部署成功！"
     },
     "ERROR": {
       "NOT-FOUND": "所请求的模型不存在"

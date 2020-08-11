@@ -21,7 +21,7 @@ FLOWABLE.APP_URL = {
     /* ACCOUNT URLS */
 
     getAccountUrl: function () {
-        return FLOWABLE.CONFIG.contextRoot + '/apps/rest/account';
+        return FLOWABLE.CONFIG.contextRoot + '/flowable/rest/account';
     },
 
     getLogoutUrl: function () {
@@ -233,15 +233,18 @@ FLOWABLE.APP_URL = {
     /* OTHER URLS */
 
     getEditorUsersUrl: function () {
-        return FLOWABLE.CONFIG.contextRoot + '/app/rest/editor-users';
+        return FLOWABLE.CONFIG.contextRoot + '/flowable/rest/editor-users';
     },
 
     getEditorGroupsUrl: function () {
-        return FLOWABLE.CONFIG.contextRoot + '/app/rest/editor-groups';
+        return FLOWABLE.CONFIG.contextRoot + '/flowable/rest/editor-groups';
     },
 
     getAboutInfoUrl: function () {
         return FLOWABLE.CONFIG.contextRoot + '/app/rest/about-info';
+    },
+    deployModel: function () {
+        return FLOWABLE.CONFIG.contextRoot + '/flowable/deploy/';
     }
 
 };

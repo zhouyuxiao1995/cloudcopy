@@ -71,6 +71,9 @@
 					<div class="actions">
 						<span class="badge">v{{process.version}}</span>
 						<div class="btn-group pull-right">
+							<button  type="button" ng-click="deployProcessDetails(process); $event.stopPropagation();" class="btn btn-default" title="流程部署">
+								<i class="glyphicon glyphicon-heart"></i>
+							</button>
 							<button id="detailsButton" type="button" ng-click="showProcessDetails(process); $event.stopPropagation();" class="btn btn-default" title="{{'PROCESS.ACTION.DETAILS' | translate}}">
 								<i class="glyphicon glyphicon-search"></i>
 							</button>

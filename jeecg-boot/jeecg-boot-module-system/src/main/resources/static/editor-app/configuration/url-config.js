@@ -19,11 +19,11 @@ FLOWABLE.URL = {
     },
 
     getStencilSet: function() {
-        return FLOWABLE.CONFIG.contextRoot + '/app1/rest/stencil-sets/editor?version=' + Date.now();
+        return FLOWABLE.CONFIG.contextRoot + '/app/rest/stencil-sets/editor?version=' + Date.now();
     },
     
     getCmmnStencilSet: function() {
-        return FLOWABLE.CONFIG.contextRoot + '/app1/rest/stencil-sets/cmmneditor?version=' + Date.now();
+        return FLOWABLE.CONFIG.contextRoot + '/app/rest/stencil-sets/cmmneditor?version=' + Date.now();
     },
 
     putModel: function(modelId) {

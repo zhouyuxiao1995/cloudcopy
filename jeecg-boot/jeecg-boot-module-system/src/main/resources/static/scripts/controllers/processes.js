@@ -128,6 +128,18 @@ angular.module('flowableModeler')
 	          $location.path("/processes/" + process.id);
 	      }
 	  };
+      $scope.deployProcessDetails = function(process) {
+          if (process) {
+              $http({method: 'GET', url: FLOWABLE.APP_URL.deployModel()+"?modelId="+process.id}).
+              success(function(data) {
+                  $scope.addAlertPromise($translate('PROCESS.ALERT.DEPLOY-CONFIRM'), 'info');
+                  $scope.model.errorMessage ="+process.id";
+              }).
+              error(function(data, status, headers, config) {
+                  $scope.model.errorMessage = data.message;
+              });
+          }
+      };
 
 	  $scope.editProcessDetails = function(process) {
 		  if (process) {

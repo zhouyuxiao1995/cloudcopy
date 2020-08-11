@@ -58,9 +58,9 @@ spring:
             threadPriority: 5
             threadsInheritContextClassLoaderOfInitializingThread: true
   #json 时间戳统一转换
-  jackson:
-    date-format:   yyyy-MM-dd HH:mm:ss
-    time-zone:   GMT+8
+#  jackson:
+#    date-format:   yyyy-MM-dd HH:mm:ss
+#    time-zone:   GMT+8
   aop:
     proxy-target-class: true
   activiti:

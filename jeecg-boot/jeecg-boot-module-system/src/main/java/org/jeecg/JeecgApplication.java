@@ -16,17 +16,22 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 @Slf4j
+@EnableSwagger2
 //启用全局异常拦截器
 @Import(value={
         // 引入修改的配置
         ApplicationConfiguration.class,
         AppDispatcherServletConfiguration.class})
-@SpringBootApplication(exclude={SecurityAutoConfiguration.class, ManagementWebSecurityAutoConfiguration.class
+@SpringBootApplication(exclude={
+        SecurityAutoConfiguration.class,
+        org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class,
+        ManagementWebSecurityAutoConfiguration.class
         })
 public class JeecgApplication extends SpringBootServletInitializer {
 
