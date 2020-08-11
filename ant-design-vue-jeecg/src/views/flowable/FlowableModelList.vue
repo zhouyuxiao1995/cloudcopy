@@ -3,33 +3,22 @@
 
     <!-- 查询区域 -->
     <div class="table-page-search-wrapper">
-      <a-form layout="inline" @keyup.enter.native="searchQuery">
+      <a-form layout="inline">
         <a-row :gutter="24">
           <a-col :md="6" :sm="8">
-            <a-form-item label="消息标题">
-              <a-input placeholder="请输入消息标题" v-model="queryParam.esTitle"></a-input>
+            <a-form-item label="流程定义ID">
+              <a-input placeholder="流程定义ID" v-model="id"></a-input>
             </a-form-item>
           </a-col>
           <a-col :md="6" :sm="8">
-            <a-form-item label="发送内容">
-              <a-input placeholder="请输入发送内容" v-model="queryParam.esContent"></a-input>
+            <a-form-item label="流程定义名称">
+              <a-input placeholder="流程定义名称" v-model="name"></a-input>
             </a-form-item>
           </a-col>
-          <template v-if="toggleSearchStatus">
-            <a-col :md="6" :sm="8">
-              <a-form-item label="接收人">
-                <a-input placeholder="请输入接收人" v-model="queryParam.esReceiver"></a-input>
-              </a-form-item>
-            </a-col>
-          </template>
           <a-col :md="6" :sm="8">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
-              <a @click="handleToggleSearch" style="margin-left: 8px">
-                {{ toggleSearchStatus ? '收起' : '展开' }}
-                <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
-              </a>
             </span>
           </a-col>
 
@@ -39,23 +28,7 @@
 
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-      <a-button @click="handleAdd" v-show="show" type="primary" icon="plus">新增</a-button>
-      <a-button type="primary" v-show="show" icon="download" @click="handleExportXls('消息')">导出</a-button>
-      <a-upload v-show="show" name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl"
-                @change="handleImportExcel">
-        <a-button type="primary" icon="import">导入</a-button>
-      </a-upload>
-      <a-dropdown v-if="selectedRowKeys.length > 0">
-        <a-menu slot="overlay">
-          <a-menu-item key="1" @click="batchDel">
-            <a-icon type="delete"/>
-            删除
-          </a-menu-item>
-        </a-menu>
-        <a-button style="margin-left: 8px"> 批量操作
-          <a-icon type="down"/>
-        </a-button>
-      </a-dropdown>
+      <a-button @click="handleStart()" type="primary" icon="play-square">启动流程</a-button>
     </div>
 
     <!-- table区域-begin -->
@@ -73,10 +46,8 @@
         rowKey="id"
         :columns="columns"
         :dataSource="dataSource"
-        :pagination="ipagination"
         :loading="loading"
-        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
-        @change="handleTableChange">
+        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}">
 
         <!-- 字符串超长截取省略号显示-->
         <span slot="esContent" slot-scope="text">
@@ -84,23 +55,8 @@
         </span>
 
         <span slot="action" slot-scope="text, record">
-          <a href="javascript:;" @click="handleDetail(record)">详情</a>
-          <a-divider type="vertical"/>
-          <a-dropdown>
-            <a class="ant-dropdown-link">更多<a-icon type="down"/></a>
-            <a-menu slot="overlay">
-               <a-menu-item v-show="show">
-                <a  @click="handleEdit(record)">编辑</a>
-              </a-menu-item>
-              <a-menu-item>
-                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
-                  <a>删除</a>
-                </a-popconfirm>
-              </a-menu-item>
-            </a-menu>
-          </a-dropdown>
+          <a href="javascript:;" @click="handleStart(record)">启动</a>
         </span>
-
       </a-table>
     </div>
     <!-- table区域-end -->
@@ -110,24 +66,25 @@
 </template>
 
 <script>
-  import {JeecgListMixin} from '@/mixins/JeecgListMixin'
-  import JEllipsis from "@/components/jeecg/JEllipsis";
-
+  import {getAction,postAction} from '@/api/manage'
   export default {
-    name: "SysMessageList",
-    mixins: [JeecgListMixin],
-    components: {
-      JEllipsis
-    },
+    name: "FlowableModelList",
     data() {
       return {
+        loading:false,
+        selectedRowKeys: [],
+        /* table选中records*/
+        selectionRows: [],
+        id:'',
+        name:'',
+        dataSource:[],
         description: '消息管理页面',
         // 新增修改按钮是否显示
         show: false,
         // 表头
         columns: [
           {
-            title: '#',
+            title: '序号',
             dataIndex: '',
             key: 'rowIndex',
             width: 60,
@@ -137,40 +94,24 @@
             }
           },
           {
-            title: '消息标题',
+            title: '流程定义ID',
             align: "center",
-            dataIndex: 'esTitle'
+            dataIndex: 'id'
           },
           {
-            title: '发送内容',
+            title: '流程定义key',
             align: "center",
-            dataIndex: 'esContent',
-            scopedSlots: {customRender: 'esContent'},
+            dataIndex: 'key'
           },
           {
-            title: '接收人',
+            title: '流程定义名称',
             align: "center",
-            dataIndex: 'esReceiver'
+            dataIndex: 'name'
           },
           {
-            title: '发送次数',
+            title: '流程定义版本',
             align: "center",
-            dataIndex: 'esSendNum'
-          },
-          {
-            title: '发送状态',
-            align: 'center',
-            dataIndex: 'esSendStatus_dictText'
-          },
-          {
-            title: '发送时间',
-            align: "center",
-            dataIndex: 'esSendTime'
-          },
-          {
-            title: '发送方式',
-            align: 'center',
-            dataIndex: 'esType_dictText'
+            dataIndex: 'version'
           },
           {
             title: '操作',
@@ -180,20 +121,70 @@
           }
         ],
         url: {
-          list: "app/rest/models?filter=processes&modelType=0&sort=modifiedDesc",
-          delete: "/message/sysMessage/delete",
-          deleteBatch: "/message/sysMessage/deleteBatch",
-          exportXlsUrl: "message/sysMessage/exportXls",
-          importExcelUrl: "message/sysMessage/importExcel",
+          list: "/flowable/load/process-definition",
+          start:"/flowable/start/process-instance",
         },
       }
     },
-    computed: {
-      importExcelUrl: function () {
-        return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
-      }
+    created() {
+      this.loadData();
     },
-    methods: {}
+    methods: {
+      //加载数据源
+      loadData(){
+        this.loading = true;
+        getAction(this.url.list, {id:this.id,name:this.name}).then((res) => {
+          if (res) {
+            this.dataSource = res;
+            this.loading = false;
+          }
+        })
+      },
+      //查询
+      searchQuery(){
+        this.loadData();
+      },
+      //重置
+      searchReset(){
+        this.id='';
+        this.name='';
+        this.loadData();
+      },
+      //清除选中
+      onClearSelected() {
+        this.selectedRowKeys = [];
+        this.selectionRows = [];
+      },
+      //选择变化
+      onSelectChange(selectedRowKeys, selectionRows) {
+        this.selectedRowKeys = selectedRowKeys;
+        this.selectionRows = selectionRows;
+      },
+      //流程启动
+      handleStart(recode){
+        var this_ = this;
+        var selectedData=[];
+        this_.loading = true;
+        if(recode){//判断是否批量启动
+          selectedData.push(recode);
+        }else
+          selectedData = this_.selectionRows;
+        if(selectedData.length<=0){
+          this_.loading = false;
+          return this_.$message.warning("请选择需要启动的流程定义！");
+        }
+
+        postAction(this_.url.start, {processDefinitionModelList:selectedData}).then((res) => {
+          if (res.success) {
+            this_.$message.success(res.message);
+          }else
+            this_.$message.error(res.message);
+        }).finally(data =>{
+          selectedData=[];
+          this_.loading = false;
+        })
+      },
+    }
   }
 </script>
 <style lang="less" scoped>

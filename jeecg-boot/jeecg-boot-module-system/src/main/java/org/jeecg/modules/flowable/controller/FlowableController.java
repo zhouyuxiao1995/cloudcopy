@@ -1,14 +1,17 @@
 package org.jeecg.modules.flowable.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.lang3.StringUtils;
 import org.flowable.bpmn.converter.BpmnXMLConverter;
 import org.flowable.bpmn.model.BpmnModel;
-import org.flowable.editor.language.json.converter.BpmnJsonConverter;
 import org.flowable.engine.IdentityService;
 import org.flowable.engine.RepositoryService;
+import org.flowable.engine.RuntimeService;
 import org.flowable.engine.repository.Deployment;
+import org.flowable.engine.repository.ProcessDefinition;
+import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.idm.api.Group;
 import org.flowable.idm.api.User;
 import org.flowable.idm.engine.impl.persistence.entity.UserEntityImpl;
@@ -19,13 +22,15 @@ import org.flowable.ui.common.security.DefaultPrivileges;
 import org.flowable.ui.common.security.SecurityUtils;
 import org.flowable.ui.modeler.domain.Model;
 import org.flowable.ui.modeler.serviceapi.ModelService;
+import org.jeecg.common.api.vo.Result;
+import org.jeecg.modules.flowable.entity.ProcessDefinitionModel;
+import org.jeecg.modules.flowable.service.IProdefService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,6 +53,10 @@ public class FlowableController {
 
     @Autowired
     private ModelService modelService;
+
+    @Autowired
+    private IProdefService prodefService;
+
 
     /**
      * 获取默认的管理员信息
@@ -141,4 +150,17 @@ public class FlowableController {
                 .addBytes(processName, bpmnBytes)
                 .deploy();
     }
+
+    @GetMapping("/load/process-definition")
+    public List<ProcessDefinitionModel> getProcessDefinition(String id, String name){
+       return prodefService.getProcessDefinition(id,name);
+    }
+
+    @PostMapping(value = "/start/process-instance")
+    public Result<?> addExpense(@RequestBody JSONObject jsonObject) {
+        List<ProcessDefinitionModel> processDefinitionModelList = jsonObject.getJSONArray("processDefinitionModelList") == null ? new ArrayList<>() : jsonObject.getJSONArray("processDefinitionModelList").toJavaList(ProcessDefinitionModel.class);
+        prodefService.startProcessDefinition(processDefinitionModelList);
+        return Result.ok("流程实例启动成功!");
+    }
+
 }
