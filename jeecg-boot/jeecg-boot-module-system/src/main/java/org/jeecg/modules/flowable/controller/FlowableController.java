@@ -1,20 +1,19 @@
 package org.jeecg.modules.flowable.controller;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.lang3.StringUtils;
 import org.flowable.bpmn.converter.BpmnXMLConverter;
 import org.flowable.bpmn.model.BpmnModel;
-import org.flowable.engine.IdentityService;
-import org.flowable.engine.RepositoryService;
-import org.flowable.engine.RuntimeService;
+import org.flowable.engine.*;
 import org.flowable.engine.repository.Deployment;
-import org.flowable.engine.repository.ProcessDefinition;
+import org.flowable.engine.runtime.Execution;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.idm.api.Group;
 import org.flowable.idm.api.User;
 import org.flowable.idm.engine.impl.persistence.entity.UserEntityImpl;
+import org.flowable.image.ProcessDiagramGenerator;
+import org.flowable.task.api.Task;
 import org.flowable.ui.common.model.GroupRepresentation;
 import org.flowable.ui.common.model.ResultListDataRepresentation;
 import org.flowable.ui.common.model.UserRepresentation;
@@ -31,6 +30,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,6 +59,14 @@ public class FlowableController {
     @Autowired
     private IProdefService prodefService;
 
+    @Autowired
+    private RuntimeService runtimeService;
+
+    @Autowired
+    private TaskService taskService;
+
+    @Autowired
+    private ProcessEngine processEngine;
 
     /**
      * 获取默认的管理员信息
@@ -152,8 +162,8 @@ public class FlowableController {
     }
 
     @GetMapping("/load/process-definition")
-    public List<ProcessDefinitionModel> getProcessDefinition(String id, String name){
-       return prodefService.getProcessDefinition(id,name);
+    public List<ProcessDefinitionModel> getProcessDefinition(String id, String name) {
+        return prodefService.getProcessDefinition(id, name);
     }
 
     @PostMapping(value = "/start/process-instance")
@@ -161,6 +171,11 @@ public class FlowableController {
         List<ProcessDefinitionModel> processDefinitionModelList = jsonObject.getJSONArray("processDefinitionModelList") == null ? new ArrayList<>() : jsonObject.getJSONArray("processDefinitionModelList").toJavaList(ProcessDefinitionModel.class);
         prodefService.startProcessDefinition(processDefinitionModelList);
         return Result.ok("流程实例启动成功!");
+    }
+
+    @GetMapping(value = "/processDiagram")
+    public void genProcessDiagram(HttpServletResponse httpServletResponse, @RequestParam(value="processId") String processId) throws Exception {
+        prodefService.generateDiagram(processId,httpServletResponse.getOutputStream());
     }
 
 }

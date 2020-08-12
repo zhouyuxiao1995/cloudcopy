@@ -3,6 +3,8 @@ package org.jeecg.modules.flowable.service;
 import org.flowable.engine.repository.ProcessDefinition;
 import org.jeecg.modules.flowable.entity.ProcessDefinitionModel;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 
 /**
@@ -20,4 +22,11 @@ public interface IProdefService {
      */
     List<ProcessDefinitionModel> getProcessDefinition(String id, String name);
     void startProcessDefinition(List<ProcessDefinitionModel> processDefinitionModelList);
+    /**
+     * 绘制流程图
+     * @param instId
+     * @param outputStream
+     * @return
+     */
+    void generateDiagram(String instId, OutputStream outputStream) throws IOException;
 }
