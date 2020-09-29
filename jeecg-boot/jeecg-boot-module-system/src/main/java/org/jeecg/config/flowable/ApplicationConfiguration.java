@@ -33,6 +33,7 @@ import org.springframework.web.servlet.DispatcherServlet;
 )
 public class ApplicationConfiguration {
 
+
     @Bean
     public ServletRegistrationBean modelerApiServlet(ApplicationContext applicationContext) {
         AnnotationConfigWebApplicationContext dispatcherServletConfiguration = new AnnotationConfigWebApplicationContext();

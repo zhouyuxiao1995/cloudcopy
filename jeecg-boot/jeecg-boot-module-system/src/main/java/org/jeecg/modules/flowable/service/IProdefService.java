@@ -29,4 +29,6 @@ public interface IProdefService {
      * @return
      */
     void generateDiagram(String instId, OutputStream outputStream) throws IOException;
+
+    List<ProcessDefinitionModel> getProcessDeploymentList();
 }

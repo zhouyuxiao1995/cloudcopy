@@ -172,4 +172,9 @@ public class FlowableController {
         prodefService.generateDiagram(processId,httpServletResponse.getOutputStream());
     }
 
+    @GetMapping(value = "/load-process-deployment")
+    public List<ProcessDefinitionModel>  getProcessDeploymentList(){
+        return prodefService.getProcessDeploymentList();
+    }
+
 }

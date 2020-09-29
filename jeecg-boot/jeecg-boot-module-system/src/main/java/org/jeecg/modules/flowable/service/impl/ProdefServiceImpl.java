@@ -12,6 +12,7 @@ import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.image.ProcessDiagramGenerator;
 import org.flowable.image.impl.DefaultProcessDiagramGenerator;
 import org.jeecg.modules.flowable.entity.ProcessDefinitionModel;
+import org.jeecg.modules.flowable.mapper.ProdefMapper;
 import org.jeecg.modules.flowable.service.IProdefService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +54,9 @@ public class ProdefServiceImpl implements IProdefService {
 
     @Autowired
     ProcessEngineConfiguration processEngineConfiguration;
+
+    @Autowired
+    ProdefMapper prodefMapper;
 
     @Override
     public List<ProcessDefinitionModel> getProcessDefinition(String id, String name) {
@@ -268,5 +272,9 @@ public class ProdefServiceImpl implements IProdefService {
 
         }
         return highLightedFlowIds;
+    }
+
+    public List<ProcessDefinitionModel> getProcessDeploymentList(){
+        return prodefMapper.getProcessDeploymentList();
     }
 }
